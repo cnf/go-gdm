@@ -45,13 +45,25 @@ func GetServer(name string) (*GDMMessage, error) {
     return nil, errors.New(fmt.Sprintf("No player found named `%s`", name))
 }
 
-func WatchPlayers(freq int) (chan *GDMMessage, error) { return nil, nil }
+func WatchPlayers(freq int) (*GDMWatcher, error) {
+    gdms, err := watcher(GDM_PORT_PLAYER, freq)
+    if err != nil {
+        return nil, err
+    }
+    return gdms, nil
+}
 
-func WatchPlayer(name string) (chan *GDMMessage, error) { return nil, nil }
+func WatchPlayer(name string) (*GDMWatcher, error) { return nil, nil }
 
-func WatchServers(freq int) (chan *GDMMessage, error) { return nil, nil }
+func WatchServers(freq int) (*GDMWatcher, error) {
+    gdms, err := watcher(GDM_PORT_SERVER, freq)
+    if err != nil {
+        return nil, err
+    }
+    return gdms, nil
+}
 
-func WatchServer(name string) (chan *GDMMessage, error) { return nil, nil }
+func WatchServer(name string) (*GDMWatcher, error) { return nil, nil }
 
 func WatchForUpdates() {}
 
@@ -77,7 +89,7 @@ func (w *GDMWatcher) Close() {
 }
 
 func getter(port int) ([]*GDMMessage, error) {
-    players := make([]*GDMMessage, 0)
+    items := make([]*GDMMessage, 0)
     browser, err := setupBrowser(10)
     if err != nil { return nil, nil }
     browser.listen()
@@ -91,10 +103,30 @@ func getter(port int) ([]*GDMMessage, error) {
             done = true
             browser.conn.Close()
         case msg := <- browser.mc:
-            players = append(players, msg)
+            items = append(items, msg)
         }
     }
-    return players, nil
+    return items, nil
+}
+
+func watcher(port int, freq int) (*GDMWatcher, error) {
+    browser, err := setupBrowser(10)
+    if err != nil {
+        return nil, err
+    }
+    browser.listen()
+    browser.browse(port)
+    go func() {
+        for {
+            <-browser.ticker.C
+            browser.browse(port)
+        }
+    }()
+
+    watcher := &GDMWatcher{Watch: browser.mc, closer: make(chan bool)}
+    browser.closer(watcher.closer)
+
+    return watcher, nil
 }
 
 func setupBrowser(i int) (*gdmBrowser, error) {
@@ -131,6 +163,17 @@ func (b *gdmBrowser) listen() {
                 gdmmsg := newGDMMessage(msg, raddr)
                 b.mc <- gdmmsg
             }
+        }
+    }()
+}
+
+func (b *gdmBrowser) closer(s chan bool) {
+    go func() {
+        select {
+        case <- s:
+            b.conn.Close()
+            fmt.Println("channel closed")
+            return
         }
     }()
 }
