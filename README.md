@@ -49,7 +49,7 @@ if err != nil {
 ```go
 w, cerr := gdm.WatchServers(5)
 if cerr != nil {
-    // Error handeling
+    // Error handling
 } else {
     i := 0
     fmt.Printf("%# v\n", w)
