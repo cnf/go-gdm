@@ -121,6 +121,7 @@ func (b *gdmBrowser) listen() {
             if err != nil {
                 if nerr, ok := err.(net.Error); !ok || !nerr.Temporary() {
                     // this connection has become useless
+                    close(b.mc)
                     return
             }
                 continue
