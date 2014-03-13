@@ -37,7 +37,8 @@ func (w *GDMWatcher) Close()
 ## Examples
 
 ```go
-box, err := GetServer("someName")
+
+box, err := gdm.GetServer("someName")
 if err != nil {
     fmt.Println(err.Error())
 } else {
@@ -46,7 +47,7 @@ if err != nil {
 ```
 
 ```go
-w, cerr := WatchServers(5)
+w, cerr := gdm.WatchServers(5)
 if cerr != nil {
     // Error handeling
 } else {
