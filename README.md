@@ -1,14 +1,6 @@
 # go GDM package
 
-WiP for the moment
-
-## Usage
-
-```go
-import "github.com/cnf/go-gdm"
-
-gdms, err := GetServers()
-```
+[go](http://golang.org) package to browse [Plex](http://plex.tv) server / players with GDM.
 
 ## Available functions
 ```go
@@ -45,6 +37,15 @@ func (w *GDMWatcher) Close()
 ## Examples
 
 ```go
+box, err := GetServer("someName")
+if err != nil {
+    fmt.Println(err.Error())
+} else {
+    fmt.Printf("%# v\n", box.Props["Name"])
+}
+```
+
+```go
 w, cerr := WatchServers(5)
 if cerr != nil {
     // Error handeling
@@ -57,7 +58,7 @@ if cerr != nil {
         fmt.Printf("%# v\n", gdm)
         i++
         if i >= 10 {
-            w.Close()
+            w.Close() // Call close to quit to clean up.
         }
     }
 }
