@@ -53,8 +53,6 @@ func WatchPlayers(freq int) (*GDMWatcher, error) {
     return gdms, nil
 }
 
-func WatchPlayer(name string) (*GDMWatcher, error) { return nil, nil }
-
 func WatchServers(freq int) (*GDMWatcher, error) {
     gdms, err := watcher(GDM_PORT_SERVER, freq)
     if err != nil {
@@ -62,8 +60,6 @@ func WatchServers(freq int) (*GDMWatcher, error) {
     }
     return gdms, nil
 }
-
-func WatchServer(name string) (*GDMWatcher, error) { return nil, nil }
 
 func WatchForUpdates() {}
 
@@ -192,7 +188,6 @@ func (b *gdmBrowser) browse(port int) {
             continue
         }
     }
-    // browser.waitForReply()
 }
 
 func newGDMMessage(data string, addr *net.UDPAddr) (*GDMMessage) {

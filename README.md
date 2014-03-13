@@ -10,9 +10,7 @@ func GetServers() ([]*GDMMessage, error)
 func GetServer(name string) (*GDMMessage, error)
 
 func WatchPlayers(freq int) (chan *GDMWatcher, error)
-func WatchPlayer(name string) (chan *GDMWatcher, error)
 func WatchServers(freq int) (chan *GDMWatcher, error)
-func WatchServer(name string) (chan *GDMWatcher, error)
 ```
 
 ### GDMMessage
