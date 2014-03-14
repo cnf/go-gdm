@@ -2,6 +2,8 @@
 
 [go](http://golang.org) package to browse [Plex](http://plex.tv) server / players with GDM.
 
+Based on the work, and with the help of Tobias Hieta <tobias@plexapp.com>
+
 ## Available functions
 ```go
 func GetPlayers() ([]*GDMMessage, error)
