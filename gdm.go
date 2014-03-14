@@ -168,7 +168,6 @@ func (b *gdmBrowser) closer(s chan bool) {
         select {
         case <- s:
             b.conn.Close()
-            fmt.Println("channel closed")
             return
         }
     }()
