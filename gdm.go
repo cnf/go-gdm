@@ -9,18 +9,18 @@ import "time"
 import "strconv"
 import "errors"
 
-const GDM_PORT_PLAYER = 32412
-const GDM_PORT_SERVER = 32414
-const SERVER_WAIT_TIME time.Duration = 2
+const gdmPlayerPort = 32412
+const gdmServerPort = 32414
+const serverWaitTime time.Duration = 2
 
 // GetPlayers returns a list of Players.
 func GetPlayers() ([]*GDMMessage, error) {
-    return getter(GDM_PORT_PLAYER)
+    return getter(gdmPlayerPort)
 }
 
 // GetPlayer returns a single Player matching the name supplied.
 func GetPlayer(name string) (*GDMMessage, error) {
-    gdms, err := getter(GDM_PORT_PLAYER)
+    gdms, err := getter(gdmPlayerPort)
     if err != nil {
         return nil, err
     }
@@ -34,12 +34,12 @@ func GetPlayer(name string) (*GDMMessage, error) {
 
 // GetServers returns a list of Servers.
 func GetServers() ([]*GDMMessage, error) {
-    return getter(GDM_PORT_SERVER)
+    return getter(gdmServerPort)
 }
 
 // GetServer returns a single Server matching the name supplied.
 func GetServer(name string) (*GDMMessage, error) {
-    gdms, err := getter(GDM_PORT_SERVER)
+    gdms, err := getter(gdmServerPort)
     if err != nil {
         return nil, err
     }
@@ -54,7 +54,7 @@ func GetServer(name string) (*GDMMessage, error) {
 // WatchPlayers returns a *GDMWatcher instance containing a channel
 // on which it pushes all Players that answer the regular broadcasts
 func WatchPlayers(freq int) (*GDMWatcher, error) {
-    gdms, err := watcher(GDM_PORT_PLAYER, freq)
+    gdms, err := watcher(gdmPlayerPort, freq)
     if err != nil {
         return nil, err
     }
@@ -64,7 +64,7 @@ func WatchPlayers(freq int) (*GDMWatcher, error) {
 // WatchServers returns a *GDMWatcher instance containing a channel
 // on which it pushes all Servers that answer the regular broadcasts
 func WatchServers(freq int) (*GDMWatcher, error) {
-    gdms, err := watcher(GDM_PORT_SERVER, freq)
+    gdms, err := watcher(gdmServerPort, freq)
     if err != nil {
         return nil, err
     }
@@ -102,7 +102,7 @@ func getter(port int) ([]*GDMMessage, error) {
     browser.listen()
     browser.browse(port)
 
-    timer := time.NewTimer(time.Second * SERVER_WAIT_TIME)
+    timer := time.NewTimer(time.Second * serverWaitTime)
     done := false
     for !done {
         select {
