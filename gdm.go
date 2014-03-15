@@ -7,7 +7,6 @@ import "fmt"
 import "strings"
 import "time"
 import "strconv"
-import "errors"
 
 const gdmPlayerPort = 32412
 const gdmServerPort = 32414
@@ -29,7 +28,7 @@ func GetPlayer(name string) (*GDMMessage, error) {
             return gdm, nil
         }
     }
-    return nil, errors.New(fmt.Sprintf("No player found named `%s`", name))
+    return nil, fmt.Errorf("no player found named `%s`", name)
 }
 
 // GetServers returns a list of Servers.
@@ -48,7 +47,7 @@ func GetServer(name string) (*GDMMessage, error) {
             return gdm, nil
         }
     }
-    return nil, errors.New(fmt.Sprintf("No player found named `%s`", name))
+    return nil, fmt.Errorf("no player found named `%s`", name)
 }
 
 // WatchPlayers returns a *GDMWatcher instance containing a channel
