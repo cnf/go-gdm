@@ -1,3 +1,5 @@
+// Package gdm provides an interface to the plex.tv GDM protocol for
+// Plex player/server discovery.
 package gdm
 
 import "net"
@@ -11,10 +13,12 @@ const GDM_PORT_PLAYER = 32412
 const GDM_PORT_SERVER = 32414
 const SERVER_WAIT_TIME time.Duration = 2
 
+// GetPlayers returns a list of Players.
 func GetPlayers() ([]*GDMMessage, error) {
     return getter(GDM_PORT_PLAYER)
 }
 
+// GetPlayer returns a single Player matching the name supplied.
 func GetPlayer(name string) (*GDMMessage, error) {
     gdms, err := getter(GDM_PORT_PLAYER)
     if err != nil {
@@ -28,10 +32,12 @@ func GetPlayer(name string) (*GDMMessage, error) {
     return nil, errors.New(fmt.Sprintf("No player found named `%s`", name))
 }
 
+// GetServers returns a list of Servers.
 func GetServers() ([]*GDMMessage, error) {
     return getter(GDM_PORT_SERVER)
 }
 
+// GetServer returns a single Server matching the name supplied.
 func GetServer(name string) (*GDMMessage, error) {
     gdms, err := getter(GDM_PORT_SERVER)
     if err != nil {
@@ -45,6 +51,8 @@ func GetServer(name string) (*GDMMessage, error) {
     return nil, errors.New(fmt.Sprintf("No player found named `%s`", name))
 }
 
+// WatchPlayers returns a *GDMWatcher instance containing a channel
+// on which it pushes all Players that answer the regular broadcasts
 func WatchPlayers(freq int) (*GDMWatcher, error) {
     gdms, err := watcher(GDM_PORT_PLAYER, freq)
     if err != nil {
@@ -53,6 +61,8 @@ func WatchPlayers(freq int) (*GDMWatcher, error) {
     return gdms, nil
 }
 
+// WatchServers returns a *GDMWatcher instance containing a channel
+// on which it pushes all Servers that answer the regular broadcasts
 func WatchServers(freq int) (*GDMWatcher, error) {
     gdms, err := watcher(GDM_PORT_SERVER, freq)
     if err != nil {
@@ -61,14 +71,14 @@ func WatchServers(freq int) (*GDMWatcher, error) {
     return gdms, nil
 }
 
-func WatchForUpdates() {}
-
+// GDMMessage holds the information of one Player or Server
 type GDMMessage struct {
     Address *net.UDPAddr
     Added bool
     Props map[string]string
 }
 
+// GDMWatcher is the structure containing the Watch channel.
 type GDMWatcher struct {
     Watch chan *GDMMessage
     closer chan bool
@@ -80,6 +90,7 @@ type gdmBrowser struct {
     conn *net.UDPConn
 }
 
+// Close sends all go routines associated a signal to exit.
 func (w *GDMWatcher) Close() {
     w.closer <- true
 }
