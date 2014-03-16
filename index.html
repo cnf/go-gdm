@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>GDM Go package by cnf</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>GDM Go package</h1>
+        <p>Plex.tv GDM client as a go package</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/cnf/go-gdm" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/cnf/go-gdm/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/cnf/go-gdm/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>
+<a name="go-gdm-package" class="anchor" href="#go-gdm-package"><span class="octicon octicon-link"></span></a>go GDM package</h1>
+
+<p><a href="http://golang.org">go</a> package to browse <a href="http://plex.tv">Plex</a> server / players with GDM.</p>
+
+<p>Based on the work, and with the help of Tobias Hieta <a href="mailto:tobias@plexapp.com">tobias@plexapp.com</a></p>
+
+<h2>
+<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p><a href="http://godoc.org/github.com/cnf/go-gdm"><img src="http://godoc.org/github.com/cnf/go-gdm?status.png" alt="godoc"></a></p>
+
+<h2>
+<a name="available-functions" class="anchor" href="#available-functions"><span class="octicon octicon-link"></span></a>Available functions</h2>
+
+<div class="highlight highlight-go"><pre><span class="kd">func</span> <span class="nx">GetPlayers</span><span class="p">()</span> <span class="p">([]</span><span class="o">*</span><span class="nx">GDMMessage</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+<span class="kd">func</span> <span class="nx">GetPlayer</span><span class="p">(</span><span class="nx">name</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">GDMMessage</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+<span class="kd">func</span> <span class="nx">GetServers</span><span class="p">()</span> <span class="p">([]</span><span class="o">*</span><span class="nx">GDMMessage</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+<span class="kd">func</span> <span class="nx">GetServer</span><span class="p">(</span><span class="nx">name</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">GDMMessage</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">WatchPlayers</span><span class="p">(</span><span class="nx">freq</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="kd">chan</span> <span class="o">*</span><span class="nx">GDMWatcher</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+<span class="kd">func</span> <span class="nx">WatchServers</span><span class="p">(</span><span class="nx">freq</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="kd">chan</span> <span class="o">*</span><span class="nx">GDMWatcher</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</pre></div>
+
+<h3>
+<a name="gdmmessage" class="anchor" href="#gdmmessage"><span class="octicon octicon-link"></span></a>GDMMessage</h3>
+
+<div class="highlight highlight-go"><pre><span class="kd">type</span> <span class="nx">GDMMessage</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Address</span> <span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPAddr</span>
+    <span class="nx">Added</span> <span class="kt">bool</span>
+    <span class="nx">Props</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="gdmwatcher" class="anchor" href="#gdmwatcher"><span class="octicon octicon-link"></span></a>GDMWatcher</h3>
+
+<div class="highlight highlight-go"><pre><span class="kd">type</span> <span class="nx">GDMWatcher</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Watch</span> <span class="kd">chan</span> <span class="o">*</span><span class="nx">GDMMessage</span>
+    <span class="nx">closer</span> <span class="kd">chan</span> <span class="kt">bool</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">w</span> <span class="o">*</span><span class="nx">GDMWatcher</span><span class="p">)</span> <span class="nx">Close</span><span class="p">()</span>
+</pre></div>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<div class="highlight highlight-go"><pre>
+<span class="nx">box</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">gdm</span><span class="p">.</span><span class="nx">GetServer</span><span class="p">(</span><span class="s">"someName"</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"%# v\n"</span><span class="p">,</span> <span class="nx">box</span><span class="p">.</span><span class="nx">Props</span><span class="p">[</span><span class="s">"Name"</span><span class="p">])</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-go"><pre><span class="nx">w</span><span class="p">,</span> <span class="nx">cerr</span> <span class="o">:=</span> <span class="nx">gdm</span><span class="p">.</span><span class="nx">WatchServers</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">cerr</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="c1">// Error handling</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"%# v\n"</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"================"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nx">gdm</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">w</span><span class="p">.</span><span class="nx">Watch</span> <span class="p">{</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"%02d ++++++++++++++\n"</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">"%# v\n"</span><span class="p">,</span> <span class="nx">gdm</span><span class="p">)</span>
+        <span class="nx">i</span><span class="o">++</span>
+        <span class="k">if</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">10</span> <span class="p">{</span>
+            <span class="nx">w</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span> <span class="c1">// Call close to quit to clean up.</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/cnf">cnf</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-426420-7");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
