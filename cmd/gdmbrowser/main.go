@@ -80,7 +80,7 @@ func getServers() {
 	}
 }
 
-func watcher(stop chan bool, w *gdm.GDMWatcher) {
+func watcher(stop chan bool, w *gdm.Watcher) {
 	go func() {
 		for {
 			select {
@@ -112,7 +112,7 @@ func watchServers(stop chan bool, i int) {
 	watcher(stop, wp)
 }
 
-func prettyPlexPrint(msg *gdm.GDMMessage) {
+func prettyPlexPrint(msg *gdm.Message) {
 	fmt.Printf("Name: %s\n", msg.Props["Name"])
 	fmt.Printf("  Address: %s:%d\n", msg.Address.IP, msg.Address.Port)
 	if msg.Address.Zone != "" {

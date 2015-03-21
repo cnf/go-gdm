@@ -13,12 +13,12 @@ const gdmServerPort = 32414
 const serverWaitTime time.Duration = 2
 
 // GetPlayers returns a list of Players.
-func GetPlayers() ([]*GDMMessage, error) {
+func GetPlayers() ([]*Message, error) {
 	return getter(gdmPlayerPort)
 }
 
 // GetPlayer returns a single Player matching the name supplied.
-func GetPlayer(name string) (*GDMMessage, error) {
+func GetPlayer(name string) (*Message, error) {
 	gdms, err := getter(gdmPlayerPort)
 	if err != nil {
 		return nil, err
@@ -32,12 +32,12 @@ func GetPlayer(name string) (*GDMMessage, error) {
 }
 
 // GetServers returns a list of Servers.
-func GetServers() ([]*GDMMessage, error) {
+func GetServers() ([]*Message, error) {
 	return getter(gdmServerPort)
 }
 
 // GetServer returns a single Server matching the name supplied.
-func GetServer(name string) (*GDMMessage, error) {
+func GetServer(name string) (*Message, error) {
 	gdms, err := getter(gdmServerPort)
 	if err != nil {
 		return nil, err
@@ -50,9 +50,9 @@ func GetServer(name string) (*GDMMessage, error) {
 	return nil, fmt.Errorf("no player found named `%s`", name)
 }
 
-// WatchPlayers returns a *GDMWatcher instance containing a channel
+// WatchPlayers returns a *Watcher instance containing a channel
 // on which it pushes all Players that answer the regular broadcasts
-func WatchPlayers(freq int) (*GDMWatcher, error) {
+func WatchPlayers(freq int) (*Watcher, error) {
 	gdms, err := watcher(gdmPlayerPort, freq)
 	if err != nil {
 		return nil, err
@@ -60,9 +60,9 @@ func WatchPlayers(freq int) (*GDMWatcher, error) {
 	return gdms, nil
 }
 
-// WatchServers returns a *GDMWatcher instance containing a channel
+// WatchServers returns a *Watcher instance containing a channel
 // on which it pushes all Servers that answer the regular broadcasts
-func WatchServers(freq int) (*GDMWatcher, error) {
+func WatchServers(freq int) (*Watcher, error) {
 	gdms, err := watcher(gdmServerPort, freq)
 	if err != nil {
 		return nil, err
@@ -70,32 +70,32 @@ func WatchServers(freq int) (*GDMWatcher, error) {
 	return gdms, nil
 }
 
-// GDMMessage holds the information of one Player or Server
-type GDMMessage struct {
+// Message holds the information of one Player or Server
+type Message struct {
 	Address *net.UDPAddr
 	Added   bool
 	Props   map[string]string
 }
 
-// GDMWatcher is the structure containing the Watch channel.
-type GDMWatcher struct {
-	Watch  chan *GDMMessage
+// Watcher is the structure containing the Watch channel.
+type Watcher struct {
+	Watch  chan *Message
 	closer chan bool
 }
 
 type gdmBrowser struct {
-	mc     chan *GDMMessage
+	mc     chan *Message
 	ticker *time.Ticker
 	conn   *net.UDPConn
 }
 
 // Close sends all go routines associated a signal to exit.
-func (w *GDMWatcher) Close() {
+func (w *Watcher) Close() {
 	w.closer <- true
 }
 
-func getter(port int) ([]*GDMMessage, error) {
-	items := make([]*GDMMessage, 0)
+func getter(port int) ([]*Message, error) {
+	var items []*Message
 	browser, err := setupBrowser(10)
 	if err != nil {
 		return nil, nil
@@ -117,7 +117,7 @@ func getter(port int) ([]*GDMMessage, error) {
 	return items, nil
 }
 
-func watcher(port int, freq int) (*GDMWatcher, error) {
+func watcher(port int, freq int) (*Watcher, error) {
 	browser, err := setupBrowser(freq)
 	if err != nil {
 		return nil, err
@@ -131,7 +131,7 @@ func watcher(port int, freq int) (*GDMWatcher, error) {
 		}
 	}()
 
-	watcher := &GDMWatcher{Watch: browser.mc, closer: make(chan bool)}
+	watcher := &Watcher{Watch: browser.mc, closer: make(chan bool)}
 	browser.closer(watcher.closer)
 
 	return watcher, nil
@@ -149,7 +149,7 @@ func setupBrowser(i int) (*gdmBrowser, error) {
 		return nil, lerr
 	}
 	return &gdmBrowser{conn: conn,
-		mc:     make(chan *GDMMessage),
+		mc:     make(chan *Message),
 		ticker: time.NewTicker(refresh)}, nil
 }
 
@@ -168,7 +168,7 @@ func (b *gdmBrowser) listen() {
 			}
 			msg := string(buf[0:mlen])
 			if strings.HasPrefix(msg, "HTTP/1.0 200 OK") {
-				gdmmsg := newGDMMessage(msg, raddr)
+				gdmmsg := newMessage(msg, raddr)
 				b.mc <- gdmmsg
 			}
 		}
@@ -201,9 +201,9 @@ func (b *gdmBrowser) browse(port int) {
 	}
 }
 
-func newGDMMessage(data string, addr *net.UDPAddr) *GDMMessage {
+func newMessage(data string, addr *net.UDPAddr) *Message {
 	msglines := strings.Split(data, "\r\n")
-	gdm := GDMMessage{Address: addr, Added: true, Props: make(map[string]string)}
+	gdm := Message{Address: addr, Added: true, Props: make(map[string]string)}
 	for _, m := range msglines {
 		if strings.Contains(m, ":") {
 			kv := strings.Split(m, ":")
