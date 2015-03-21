@@ -8,6 +8,14 @@ Based on the work, and with the help of Tobias Hieta <tobias@plexapp.com>
 
 [![godoc](http://godoc.org/github.com/cnf/go-gdm?status.png)](http://godoc.org/github.com/cnf/go-gdm)
 
+## gdmbrowser
+
+To install the gdmbrowser binary run, including the `...` at the end
+
+    go get github.com/cnf/go-gdm/...
+
+If you have `$GOPATH/bin` in your path, you can then run `gdmbrowser -h`
+
 ## Available functions
 ```go
 func GetPlayers() ([]*GDMMessage, error)
