@@ -7,6 +7,7 @@ Based on the work, and with the help of Tobias Hieta <tobias@plexapp.com>
 ## Documentation
 
 [![godoc](http://godoc.org/github.com/cnf/go-gdm?status.png)](http://godoc.org/github.com/cnf/go-gdm)
+[![Build Status](https://travis-ci.org/cnf/go-gdm.svg?branch=master)](https://travis-ci.org/cnf/go-gdm)
 
 ## gdmbrowser
 
